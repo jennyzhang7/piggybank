@@ -1,0 +1,12 @@
+{
+  "name": "shopify-mobile",
+  "displayName": "shopify-mobile",
+  "expo": {
+    "name": "shopify-mobile",
+    "slug": "shopify-mobile",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
