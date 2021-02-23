@@ -58,6 +58,7 @@ const App = () => {
     setTransactions(newTransactions);
   };
   const getTotalBalance = () => {
+
     return transactions.reduce((a, b) => a + b.amount, 0).toFixed(2);
   };
 
@@ -151,7 +152,7 @@ const App = () => {
           </View>
         </View>
         <View>
-          <Goals />
+          <Goals totalBalance={getTotalBalance()}/>
         </View>
       </ScrollView>
     </>

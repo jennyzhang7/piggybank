@@ -9,12 +9,11 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-const Goals = () => {
+const Goals = (props) => {
   const [items, setItems] = useState([]);
   const [price, setItemPrice] = useState("");
   const [description, setItemDescription] = useState("");
   const [transactionId, setTransactionId] = useState(0);
-
   const addGoal = () => {
     const newItems = [
       ...items,
@@ -26,6 +25,23 @@ const Goals = () => {
     ];
     setItems(newItems);
     setTransactionId(transactionId + 1);
+  };
+
+  const getPercentageUntilGoal = (itemPrice) => {
+    let percentage =
+      parseFloat((props.totalBalance / itemPrice).toFixed(2)) * 100;
+
+    if (percentage > 100) {
+      return 100;
+    }
+    return percentage;
+  };
+
+  const removeGoal = (goalId) => {
+    const newGoals = items.filter(
+      (item) => goalId !== item.id
+    );
+    setItems(newGoals);
   };
 
   return (
@@ -42,6 +58,7 @@ const Goals = () => {
             maxLength={20}
             onBlur={Keyboard.dismiss}
             onChangeText={(change) => setItemPrice(change)}
+            clearButtonMode="always"
           />
         </View>
 
@@ -52,6 +69,7 @@ const Goals = () => {
             maxLength={20}
             onBlur={Keyboard.dismiss}
             onChangeText={(change) => setItemDescription(change)}
+            clearButtonMode="always"
           />
         </View>
 
@@ -62,22 +80,26 @@ const Goals = () => {
         </View>
       </View>
 
-      <View
-            style={styles.containerHeading}
-          >
-              <Text style={styles.numCol}>Num</Text>
-            <Text style={styles.textDescription}>Description</Text>
-            <Text style={styles.textPrice}>Price</Text>
-          </View>
+      <View style={styles.containerHeading}>
+        <Text style={styles.numCol}>%</Text>
+        <Text style={styles.textDescription}>Description</Text>
+        <Text style={styles.textPrice}>Price</Text>
+        <Text style={styles.xButtonContainer}></Text>
+      </View>
       <View>
         {items.map((item, index) => (
-          <View
-            key={item.id}
-            style={styles.container}
-          >
-            <Text style={styles.numCol}>{index + 1}</Text>
+          <View key={item.id} style={getPercentageUntilGoal(item.price) < 100 ? styles.containerNormal : styles.containerGreen}>
+            <Text style={styles.numCol}>
+              {getPercentageUntilGoal(item.price)}%
+            </Text>
             <Text style={styles.textDescription}>{item.description}</Text>
-            <Text style={styles.textPrice}>{item.price}</Text>
+            <Text style={styles.textPrice}>${parseFloat(item.price).toFixed(2)}</Text>
+            <TouchableOpacity
+                style={styles.xButtonContainer}
+                onPress={() => removeGoal(item.id)}
+              >
+                <Image style={styles.xButton} source={require("./../images/xButton.png")} />
+              </TouchableOpacity>
           </View>
         ))}
       </View>
@@ -149,10 +171,17 @@ const styles = StyleSheet.create({
   },
 
   // text
-  container: {
+  containerGreen: {
     padding: 10,
     marginTop: 3,
     backgroundColor: "#d9f9b1",
+    alignItems: "flex-start",
+    flex: 1,
+    flexDirection: "row",
+  },
+  containerNormal: {
+    padding: 10,
+    marginTop: 3,
     alignItems: "flex-start",
     flex: 1,
     flexDirection: "row",
@@ -176,13 +205,24 @@ const styles = StyleSheet.create({
   textDescription: {
     color: "#373737",
     textAlign: "left",
-    flex: 3,
+    flex: 2,
   },
   textPrice: {
     color: "#373737",
-    textAlign: "left",
+    textAlign: "right",
     flex: 2,
+
   },
+  xButton: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
+  },
+  xButtonContainer: {
+    flex: 1,
+
+
+  }
 });
 
 export default Goals;
