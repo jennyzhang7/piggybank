@@ -35,6 +35,30 @@ const App = () => {
     console.log(transactions);
   };
 
+  const subtractTransaction = () => {
+    const cleanedTransactionVal = cleanTransactionVal();
+    const newTransactions = [
+      ...transactions,
+      {
+        id: transactions.length + 1,
+        amount: -cleanedTransactionVal,
+        date: getCurrentDate(),
+      },
+    ];
+    setTransactions(newTransactions);
+    console.log(transactions);
+  };
+
+  const removeTransaction = (transactionId) => {
+    const newTransactions = transactions.filter(
+      transaction => transactionId !== transaction.id
+    );
+    setTransactions(newTransactions);
+
+  };
+
+  
+
   const getTotalBalance = () => {
     return transactions.reduce((a, b) => a + b.amount, 0).toFixed(2);
   };
@@ -51,6 +75,7 @@ const App = () => {
     console.log(mm + "/" + dd + "/" + yyyy);
     return mm + "/" + dd + "/" + yyyy;
   };
+
   return (
     <>
       <ScrollView style={styles.scrollView}>
@@ -69,7 +94,6 @@ const App = () => {
             <Text>Start by entering a transaction</Text>
           )}
 
-            
           <View>
             {transactions.map((transaction) => (
               <>
@@ -86,6 +110,12 @@ const App = () => {
                   >
                     {getFormattedTransactionValue(transaction.amount)}
                   </Text>
+                  <TouchableOpacity
+                    style={styles.removeButton}
+                    onPress={() => removeTransaction(transaction.id)}
+                  >
+                    <Text style={styles.buttonText}>Remove</Text>
+                  </TouchableOpacity>
                 </View>
               </>
             ))}
@@ -107,7 +137,15 @@ const App = () => {
               style={styles.saveButton}
               onPress={addTransaction}
             >
-              <Text style={styles.saveButtonText}>Add</Text>
+              <Text style={styles.buttonText}>Add</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.subtractButton}>
+            <TouchableOpacity
+              style={styles.saveButton}
+              onPress={subtractTransaction}
+            >
+              <Text style={styles.buttonText}>Subtract</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -148,8 +186,18 @@ const styles = StyleSheet.create({
     flex: 3,
   },
   transactionsAmount: {
-    flex: 3,
+    flex: 2,
     textAlign: "right",
+  },
+  // remove button
+  removeButton: {
+    flex: 2,
+    textAlign: "right",
+    borderWidth: 1,
+    borderColor: "#007BFF",
+    backgroundColor: "#007BFF",
+    paddingTop: "5%",
+    width: "80%",
   },
 
   // for input area
@@ -160,10 +208,15 @@ const styles = StyleSheet.create({
   },
   inputField: {
     paddingTop: 15,
-    flex: 4,
+    flex: 2,
     flexDirection: "row",
   },
   inputButton: {
+    paddingTop: 15,
+    flex: 2,
+    flexDirection: "row",
+  },
+  subtractButton: {
     paddingTop: 15,
     flex: 2,
     flexDirection: "row",
@@ -185,11 +238,11 @@ const styles = StyleSheet.create({
     paddingTop: "5%",
     width: "80%",
   },
-  saveButtonText: {
+  buttonText: {
     color: "#FFFFFF",
     fontSize: 20,
     textAlign: "center",
-    paddingTop: "5%"
+    paddingTop: "5%",
   },
 });
 
