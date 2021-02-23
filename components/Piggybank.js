@@ -8,6 +8,7 @@ import {
   Keyboard,
   TouchableOpacity,
   Platform,
+  Image,
 } from "react-native";
 import Header from "./Header";
 import Goals from "./Goals";
@@ -16,6 +17,7 @@ import React, { useState } from "react";
 const Piggybank = () => {
   const [transactions, setTransactions] = useState([]);
   const [transactionVal, setTransactionVal] = useState("");
+  const [id, setId] = useState(0);
 
   const cleanTransactionVal = () => {
     return parseFloat(
@@ -27,13 +29,13 @@ const Piggybank = () => {
     const newTransactions = [
       ...transactions,
       {
-        id: transactions.length + 1,
+        id: id,
         amount: cleanedTransactionVal,
         date: getCurrentDate(),
       },
     ];
     setTransactions(newTransactions);
-    setTransactionVal("")
+    setId(id + 1)
     console.log(transactions);
   };
 
@@ -58,7 +60,6 @@ const Piggybank = () => {
     setTransactions(newTransactions);
   };
   const getTotalBalance = () => {
-
     return transactions.reduce((a, b) => a + b.amount, 0).toFixed(2);
   };
 
@@ -109,14 +110,17 @@ const Piggybank = () => {
                 >
                   {getFormattedTransactionValue(transaction.amount)}
                 </Text>
-                <View style={styles.transactionsButtonContainer}>
+
                   <TouchableOpacity
-                    style={styles.removeButton}
+                    style={styles.xButtonContainer}
                     onPress={() => removeTransaction(transaction.id)}
                   >
-                    <Text style={styles.removeButtonText}>Remove</Text>
+                    <Image
+                      style={styles.xButton}
+                      source={require("./../images/xButton.png")}
+                    />
                   </TouchableOpacity>
-                </View>
+
               </View>
             ))}
           </View>
@@ -152,7 +156,7 @@ const Piggybank = () => {
           </View>
         </View>
         <View>
-          <Goals totalBalance={getTotalBalance()}/>
+          <Goals totalBalance={getTotalBalance()} />
         </View>
       </ScrollView>
     </>
@@ -272,6 +276,14 @@ const styles = StyleSheet.create({
     fontSize: 15,
     textAlign: "center",
     paddingTop: "5%",
+  },
+  xButton: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
+  },
+  xButtonContainer: {
+    flex: 1,
   },
 });
 

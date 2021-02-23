@@ -38,9 +38,7 @@ const Goals = (props) => {
   };
 
   const removeGoal = (goalId) => {
-    const newGoals = items.filter(
-      (item) => goalId !== item.id
-    );
+    const newGoals = items.filter((item) => goalId !== item.id);
     setItems(newGoals);
   };
 
@@ -49,7 +47,55 @@ const Goals = (props) => {
       <Text style={styles.sectionHeader}>Purchase Goals</Text>
       {items.length == 0 && <Text>Saving up for an item? Add it here!</Text>}
 
+      
+
+      {/* <View style={styles.containerHeading}>
+        <Text style={styles.numCol}>%</Text>
+        <Text style={styles.textDescription}>Description</Text>
+        <Text style={styles.textPrice}>Price</Text>
+        <Text style={styles.xButtonContainer}></Text>
+      </View> */}
+      <View>
+        {items.map((item, index) => (
+          <View
+            key={item.id}
+            style={
+              getPercentageUntilGoal(item.price) < 100
+                ? styles.containerNormal
+                : styles.containerGreen
+            }
+          >
+            <Text style={styles.numCol}>
+              {getPercentageUntilGoal(item.price)}%
+            </Text>
+            <Text style={styles.textDescription}>{item.description}</Text>
+            <Text style={styles.textPrice}>
+              ${parseFloat(item.price).toFixed(2)}
+            </Text>
+            <TouchableOpacity
+              style={styles.xButtonContainer}
+              onPress={() => removeGoal(item.id)}
+            >
+              <Image
+                style={styles.xButton}
+                source={require("./../images/xButton.png")}
+              />
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
+
       <View style={styles.inputContainer}>
+        <View style={styles.inputFieldDescription}>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Ex.Skateboard"
+            maxLength={20}
+            onBlur={Keyboard.dismiss}
+            onChangeText={(change) => setItemDescription(change)}
+            clearButtonMode="always"
+          />
+        </View>
         <View style={styles.inputFieldPrice}>
           <Text style={styles.preInputField}>$</Text>
           <TextInput
@@ -61,47 +107,11 @@ const Goals = (props) => {
             clearButtonMode="always"
           />
         </View>
-
-        <View style={styles.inputFieldDescription}>
-          <TextInput
-            style={styles.textInput}
-            placeholder="Ex.Skateboard"
-            maxLength={20}
-            onBlur={Keyboard.dismiss}
-            onChangeText={(change) => setItemDescription(change)}
-            clearButtonMode="always"
-          />
-        </View>
-
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.addButton} onPress={addGoal}>
             <Text style={styles.buttonText}>Add</Text>
           </TouchableOpacity>
         </View>
-      </View>
-
-      <View style={styles.containerHeading}>
-        <Text style={styles.numCol}>%</Text>
-        <Text style={styles.textDescription}>Description</Text>
-        <Text style={styles.textPrice}>Price</Text>
-        <Text style={styles.xButtonContainer}></Text>
-      </View>
-      <View>
-        {items.map((item, index) => (
-          <View key={item.id} style={getPercentageUntilGoal(item.price) < 100 ? styles.containerNormal : styles.containerGreen}>
-            <Text style={styles.numCol}>
-              {getPercentageUntilGoal(item.price)}%
-            </Text>
-            <Text style={styles.textDescription}>{item.description}</Text>
-            <Text style={styles.textPrice}>${parseFloat(item.price).toFixed(2)}</Text>
-            <TouchableOpacity
-                style={styles.xButtonContainer}
-                onPress={() => removeGoal(item.id)}
-              >
-                <Image style={styles.xButton} source={require("./../images/xButton.png")} />
-              </TouchableOpacity>
-          </View>
-        ))}
       </View>
     </View>
   );
@@ -171,6 +181,9 @@ const styles = StyleSheet.create({
   },
 
   // text
+  rowHeadings: {
+    fontWeight: "bold",
+  },
   containerGreen: {
     padding: 10,
     marginTop: 3,
@@ -211,7 +224,6 @@ const styles = StyleSheet.create({
     color: "#373737",
     textAlign: "right",
     flex: 2,
-
   },
   xButton: {
     width: "100%",
@@ -220,9 +232,7 @@ const styles = StyleSheet.create({
   },
   xButtonContainer: {
     flex: 1,
-
-
-  }
+  },
 });
 
 export default Goals;
