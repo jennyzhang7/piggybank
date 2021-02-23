@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { Text, StyleSheet, Image } from "react-native";
 
-const onPressTitle = () => {
-  console.log("title pressed");
-};
-
 const Header = () => {
   const titleText = useState("Piggybank");
   const bodyText = useState("Start learning to manage your money");
@@ -13,7 +9,7 @@ const Header = () => {
     <>
       
       <Text style={styles.baseText}>
-        <Text style={styles.titleText} onPress={onPressTitle}>
+        <Text style={styles.titleText}>
           
           <Image style={styles.logo} source={require("./../images/piggy.png")} />
             {"  "} Piggybank
@@ -27,6 +23,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 40,
     fontWeight: "bold",
+    color: "#373737"
   },
   logo: {
     width: 50,

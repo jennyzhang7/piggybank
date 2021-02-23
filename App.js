@@ -10,6 +10,7 @@ import {
   Platform,
 } from "react-native";
 import Header from "./components/Header";
+import Goals from "./components/Goals";
 import React, { useState } from "react";
 
 const App = () => {
@@ -32,6 +33,7 @@ const App = () => {
       },
     ];
     setTransactions(newTransactions);
+    setTransactionVal("")
     console.log(transactions);
   };
 
@@ -51,14 +53,10 @@ const App = () => {
 
   const removeTransaction = (transactionId) => {
     const newTransactions = transactions.filter(
-      transaction => transactionId !== transaction.id
+      (transaction) => transactionId !== transaction.id
     );
     setTransactions(newTransactions);
-
   };
-
-  
-
   const getTotalBalance = () => {
     return transactions.reduce((a, b) => a + b.amount, 0).toFixed(2);
   };
@@ -82,6 +80,7 @@ const App = () => {
         <View style={styles.header}>
           <Header />
         </View>
+
         <View>
           <Text style={styles.sectionHeader}>
             Current Balance: ${getTotalBalance()}
@@ -96,58 +95,63 @@ const App = () => {
 
           <View>
             {transactions.map((transaction) => (
-              <>
-                <View style={styles.transactions}>
-                  <Text
-                    style={styles.transactionsDate}
-                    key={`transaction-date-${transaction.id}`}
-                  >
-                    {transaction.date}
-                  </Text>
-                  <Text
-                    style={styles.transactionsAmount}
-                    key={`transaction-val-${transaction.id}`}
-                  >
-                    {getFormattedTransactionValue(transaction.amount)}
-                  </Text>
+              <View style={styles.transactions}>
+                <Text
+                  style={styles.transactionsDate}
+                  key={`transaction-date-${transaction.id}`}
+                >
+                  {transaction.date}
+                </Text>
+                <Text
+                  style={styles.transactionsAmount}
+                  key={`transaction-val-${transaction.id}`}
+                >
+                  {getFormattedTransactionValue(transaction.amount)}
+                </Text>
+                <View style={styles.transactionsButtonContainer}>
                   <TouchableOpacity
                     style={styles.removeButton}
                     onPress={() => removeTransaction(transaction.id)}
                   >
-                    <Text style={styles.buttonText}>Remove</Text>
+                    <Text style={styles.removeButtonText}>Remove</Text>
                   </TouchableOpacity>
                 </View>
-              </>
+              </View>
             ))}
           </View>
-        </View>
 
-        <View style={styles.inputContainer}>
-          <View style={styles.inputField}>
-            <TextInput
-              style={styles.textInput}
-              placeholder="$0.00"
-              maxLength={20}
-              onBlur={Keyboard.dismiss}
-              onChangeText={(change) => setTransactionVal(change)}
-            />
+          <View style={styles.inputContainer}>
+            <View style={styles.inputField}>
+              <Text style={styles.preInputField}>$</Text>
+              <TextInput
+                style={styles.textInput}
+                placeholder="0.00"
+                maxLength={20}
+                onBlur={Keyboard.dismiss}
+                onChangeText={(change) => setTransactionVal(change)}
+                clearButtonMode="always"
+              />
+            </View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.addButton}
+                onPress={addTransaction}
+              >
+                <Text style={styles.buttonText}>Add</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.subtractButton}
+                onPress={subtractTransaction}
+              >
+                <Text style={styles.buttonText}>Subtract</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.inputButton}>
-            <TouchableOpacity
-              style={styles.saveButton}
-              onPress={addTransaction}
-            >
-              <Text style={styles.buttonText}>Add</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.subtractButton}>
-            <TouchableOpacity
-              style={styles.saveButton}
-              onPress={subtractTransaction}
-            >
-              <Text style={styles.buttonText}>Subtract</Text>
-            </TouchableOpacity>
-          </View>
+        </View>
+        <View>
+          <Goals />
         </View>
       </ScrollView>
     </>
@@ -155,7 +159,7 @@ const App = () => {
 };
 const styles = StyleSheet.create({
   scrollView: {
-    padding: "10%",
+    padding: "5%",
   },
   header: {
     flex: 1,
@@ -169,7 +173,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     fontSize: 20,
     fontWeight: "bold",
-    padding: "5%",
+    paddingBottom: "5%",
+    paddingTop: "5%",
+    textAlign: "left",
+    color: "#373737",
   },
   separator: {
     marginVertical: 8,
@@ -181,23 +188,36 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     padding: "2%",
+    // backgroundColor:"#FA8072",
+    justifyContent: "center", //Centered vertically
+    alignItems: "center", // Centered horizontally
   },
   transactionsDate: {
     flex: 3,
+    color: "#373737",
   },
   transactionsAmount: {
     flex: 2,
     textAlign: "right",
   },
+  transactionsButtonContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   // remove button
   removeButton: {
-    flex: 2,
-    textAlign: "right",
-    borderWidth: 1,
-    borderColor: "#007BFF",
-    backgroundColor: "#007BFF",
+    backgroundColor: "#DC143C",
+    width: "70%",
+    height: "85%",
+    justifyContent: "center", //Centered vertically
+    alignItems: "center", // Centered horizontally
+  },
+  removeButtonText: {
+    color: "#FFFFFF",
+    fontSize: 10,
+    textAlign: "center",
     paddingTop: "5%",
-    width: "80%",
   },
 
   // for input area
@@ -206,17 +226,12 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
   },
+  preInputField: {
+    color: "#CCCCCC",
+    fontSize: 20,
+    paddingRight: "3%",
+  },
   inputField: {
-    paddingTop: 15,
-    flex: 2,
-    flexDirection: "row",
-  },
-  inputButton: {
-    paddingTop: 15,
-    flex: 2,
-    flexDirection: "row",
-  },
-  subtractButton: {
     paddingTop: 15,
     flex: 2,
     flexDirection: "row",
@@ -224,23 +239,36 @@ const styles = StyleSheet.create({
   textInput: {
     borderColor: "#CCCCCC",
     borderWidth: 1,
-    height: 50,
+    height: "100%",
     width: "80%",
-    fontSize: 20,
-    paddingLeft: 20,
-    paddingRight: 20,
+    fontSize: 15,
+    paddingLeft: "10%",
+    paddingRight: "10%",
   },
-  // button
-  saveButton: {
+  // buttons
+  buttonContainer: {
+    paddingTop: 15,
+    flex: 2,
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  addButton: {
     borderWidth: 1,
-    borderColor: "#007BFF",
-    backgroundColor: "#007BFF",
-    paddingTop: "5%",
+    borderColor: "#006400",
+    backgroundColor: "#006400",
     width: "80%",
+    height: "100%",
+  },
+  subtractButton: {
+    borderWidth: 1,
+    borderColor: "#FA8072",
+    backgroundColor: "#DC143C",
+    width: "80%",
+    height: "100%",
   },
   buttonText: {
     color: "#FFFFFF",
-    fontSize: 20,
+    fontSize: 15,
     textAlign: "center",
     paddingTop: "5%",
   },
